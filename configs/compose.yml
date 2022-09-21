@@ -1,0 +1,54 @@
+version: '3'
+services:
+
+##############################################################
+# DO NOT UNCOMMENT DEVICES MAPPINGS UNLESS YOU HAVE VERIFIED #
+# DEVICE IDs AND YOU HAVE THOSE DEVICES CURRENTLY PLUGGED IN #
+##############################################################
+
+  grafana:
+    image: 'grafana/grafana:9.1.5'
+    ports: ["3000:3000"]
+    user: '1000'
+    volumes:
+    - /home/pi/docker-volumes/grafana:/var/lib/grafana
+    restart: always
+
+  node-red:
+    image: 'nodered/node-red:3.0.2'
+    ports: ["1880:1880"]
+    group_add: ["dialout"]
+    volumes:
+    - /home/pi/docker-volumes/node-red:/data
+#    devices:
+#    - /dev/ttySC0:/dev/ttySC0
+#    - /dev/ttySC1:/dev/ttySC1
+    restart: always
+
+  influxdb2:
+    image: 'influxdb:2.4.0'
+    ports: ["8086:8086"]
+    volumes:
+    - /home/pi/docker-volumes/influxdb2:/var/lib/influxdb2
+    restart: always
+
+  zigbee2mqtt:
+    image: 'koenkk/zigbee2mqtt:1.27.2'
+    ports: ["8080:8080"]
+    volumes:
+    - /home/pi/docker-volumes/zigbee2mqtt:/app/data
+    - /run/udev:/run/udev:ro
+#    devices:
+#    - /dev/serial/by-id/usb-ITead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_70868798ef9cec1183796a4d73138bba-if00-port0:/dev/ttyACM0
+#    - /dev/serial/by-id/usb-Texas_Instruments_TI_CC2531_USB_CDC___0X00124B001CCE0D27-if00:/dev/ttyACM0
+    environment: 
+    - "TZ=Europe/Warsaw"
+    - "ZIGBEE2MQTT_CONFIG_MQTT_SERVER=mqtt://mqtt-broker"
+    - "ZIGBEE2MQTT_CONFIG_ADVANCED_PAN_ID=45045"
+    - "ZIGBEE2MQTT_CONFIG_FRONTEND=true"
+    restart: always
+
+  mqtt-broker:
+    image: 'eclipse-mosquitto:2'
+    command: "/docker-entrypoint.sh /usr/sbin/mosquitto -c /mosquitto-no-auth.conf"
+    restart: always

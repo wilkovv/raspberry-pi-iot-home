@@ -1,0 +1,10 @@
+[Unit]
+Description=Mount backup flash drive
+
+[Mount]
+What=/dev/disk/by-label/BACKUP
+Where=/home/pi/backups
+Options=uid=1000,gid=1000
+
+[Install]
+WantedBy=multi-user.target

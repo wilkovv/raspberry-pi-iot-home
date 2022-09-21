@@ -1,0 +1,29 @@
+---
+- hosts: raspberry_pi
+
+  handlers:
+    - import_tasks: handlers/main.yml
+ 
+  vars:
+    docker_users: ['pi']
+    volumes:
+      - "grafana"
+      - "node-red"
+      - "influxdb2"
+      - "zigbee2mqtt"
+    packages:
+      - "mc"
+
+  roles:
+    - role: geerlingguy.pip
+      become: yes
+      tags: ['docker']
+    - role: geerlingguy.docker_arm
+      become: yes
+      tags: ['docker']
+  
+  tasks:
+    - import_tasks: tasks/setup-pi.yml
+      tags: ['setup','pi']
+    - import_tasks: tasks/setup-backup.yml
+      tags: ['setup','backup']

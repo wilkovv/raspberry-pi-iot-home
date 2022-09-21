@@ -1,0 +1,15 @@
+---
+- name: Reboot pi to apply /boot/config.txt changes
+  become: yes
+  ansible.builtin.reboot:
+  listen: Reboot
+
+- name: Containers down
+  become: yes
+  ansible.builtin.command: "docker-compose -f /home/{{ ansible_user }}/compose.yml down"
+  listen: Reload-containers
+
+- name: Containers up
+  become: yes
+  ansible.builtin.command: "docker-compose -f /home/{{ ansible_user }}/compose.yml up -d"
+  listen: Reload-containers

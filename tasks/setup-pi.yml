@@ -1,0 +1,29 @@
+---
+- name: Install software
+  become: true
+  package:
+    name: "{{ packages }}"
+    state: present
+
+- name: Add dtoverlay line to /boot/config.txt
+  become: true
+  ansible.builtin.lineinfile:
+    dest: '/boot/config.txt'
+    insertafter: '# Additional overlays and parameters are documented'
+    regexp: '^dtoverlay=sc16is752-spi1,int_pin=24'
+    # 2-CH RS485 HAT
+    line: 'dtoverlay=sc16is752-spi1,int_pin=24'
+    state: present
+  notify: Reboot
+
+- name: Ensure docker-volumes directories exist
+  ansible.builtin.file:
+    path: "/home/{{ ansible_user }}/docker-volumes/{{ item }}"
+    state: directory
+  loop: "{{ volumes }}"
+
+- name: Upload compose file
+  ansible.builtin.copy:
+    src: './configs/compose.yml'
+    dest: "/home/{{ ansible_user }}/compose.yml"
+  notify: Reload-containers

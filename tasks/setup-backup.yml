@@ -1,0 +1,33 @@
+---
+- name: Upload backup script
+  ansible.builtin.copy:
+    src: './configs/backup-script.sh'
+    dest: "/home/{{ ansible_user }}/backup-script.sh"
+    mode: '744'
+
+- name: Creates an entry to execute cron jobs with bash
+  ansible.builtin.cron:
+    name: 'SHELL'
+    env: yes
+    job: '/bin/bash'
+    state: present
+
+- name: Create backup cron job
+  ansible.builtin.cron:
+    name: "Job for weekly backups"
+    special_time: weekly
+    job: "/home/{{ ansible_user }}/backup-script.sh &>> /home/{{ ansible_user }}/backup.log"
+    state: present
+
+- name: Upload systemd mount file
+  become: true
+  ansible.builtin.copy:
+    src: "./configs/home-{{ ansible_user }}-backups.mount"
+    dest: "/etc/systemd/system/home-{{ ansible_user }}-backups.mount"
+    mode: '644'
+
+- name: Enable mounting backups drive
+  become: true
+  ansible.builtin.systemd:
+    enabled: true
+    name: "home-{{ ansible_user }}-backups.mount"
