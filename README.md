@@ -1,4 +1,4 @@
-# Ansible playbook: Rasperry Pi IoT
+# Ansible playbook: Raspberry Pi IoT
 
 Setup Raspberry Pi for use with my home setup. Installs docker for arm64, configures RPi to work with RS485 hat adapter and Zigbee coordinator. Setups automatic backups to USB drive. (Do NOT ever use this playbook on RPi outside of private home network)
 
