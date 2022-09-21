@@ -1,4 +1,11 @@
 ---
+- name: Reload zram service
+  become: yes
+  ansible.builtin.service:
+    name: zramswap
+    state: reloaded
+  listen: Reload-zram
+
 - name: Reboot pi to apply /boot/config.txt changes
   become: yes
   ansible.builtin.reboot:

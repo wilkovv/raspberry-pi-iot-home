@@ -1,0 +1,24 @@
+---
+- name: Install zram
+  become: true
+  package:
+    name: "zram-tools"
+    state: present
+
+- name: Setup compression algorithm to zstd
+  become: true
+  ansible.builtin.lineinfile:
+    dest: '/etc/default/zramswap'
+    regexp: 'ALGO='
+    line: 'ALGO=lz4'
+    state: present
+  notify: Reload-zram
+
+- name: Setup size od zram to 60 percent of RAM
+  become: true
+  ansible.builtin.lineinfile:
+    dest: '/etc/default/zramswap'
+    regexp: 'PERCENT='
+    line: 'PERCENT=60'
+    state: present
+  notify: Reload-zram

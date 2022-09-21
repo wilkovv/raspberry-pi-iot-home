@@ -27,3 +27,5 @@
       tags: ['setup','pi']
     - import_tasks: tasks/setup-backup.yml
       tags: ['setup','backup']
+    - import_tasks: tasks/setup-zram.yml
+      tags: ['setup','zram']
