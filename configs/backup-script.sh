@@ -1,7 +1,7 @@
 #!/bin/bash
 
 export TZ="Europe/Warsaw"
-DIR_BAK="/home/$USER/backups"
+DIR_BAK="/home/$LOGNAME/backups"
 
 echo '-------------------- Starting backup at ----------------------'
 echo $(date)
@@ -25,16 +25,16 @@ for bak_file in "${backup_files[@]}"; do
 done
 
 echo '-------------------- Shutdown containers ---------------------'
-/usr/local/bin/docker-compose -f "/home/$USER/compose.yml" down
+/usr/local/bin/docker-compose -f "/home/$LOGNAME/compose.yml" down
 
 echo '---------------------- Creating backup -----------------------'
 NAME_BAK="$(date +'%y_%m_%d_%H-%M-%S'-backup)"
-cd "/home/$USER"
+cd "/home/$LOGNAME"
 echo "$NAME_BAK"
 zip -r "$DIR_BAK/$NAME_BAK.zip" docker-volumes > /dev/null
 
 echo '--------------------- Start containers -----------------------'
-/usr/local/bin/docker-compose -f "/home/$USER/compose.yml" up -d
+/usr/local/bin/docker-compose -f "/home/$LOGNAME/compose.yml" up -d
 
 if [[ ${#backup_files[@]} -ge 5 ]]; then
     echo '---------------------- Rotating backup -----------------------'

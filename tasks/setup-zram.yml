@@ -5,7 +5,7 @@
     name: "zram-tools"
     state: present
 
-- name: Setup compression algorithm to zstd
+- name: Setup compression algorithm to lz4
   become: true
   ansible.builtin.lineinfile:
     dest: '/etc/default/zramswap'
